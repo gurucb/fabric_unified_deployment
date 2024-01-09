@@ -48,7 +48,7 @@ namespace FabricAutomation.Controllers
                 string correlationId = "your_correlation_id";
 
                 // Call the Create method from the Operations class
-                var workspaceResponse = operations.Create(token, ConvertToWorkspaceRequest(resource), correlationId);
+                var workspaceResponse = operations.CreateWorkspace(token, ConvertToWorkspaceRequest(resource), correlationId);
 
                 if (workspaceResponse != null)
                 {
