@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34330.188
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FabricProvisioningLibrary", "FabricProvisioningLibrary\FabricProvisioningLibrary.csproj", "{85A2C01E-876D-447B-8D85-6A9B7C611DC2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FabricProvisioningClient", "FabricProvisioningClient\FabricProvisioningClient.csproj", "{ED5B106B-F724-4FC8-8365-70564597CE29}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FabricAutomation", "FabricAutomation\FabricAutomation.csproj", "{7746E3D6-8F73-4354-A53C-DE9C9655F837}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{85A2C01E-876D-447B-8D85-6A9B7C611DC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{85A2C01E-876D-447B-8D85-6A9B7C611DC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{85A2C01E-876D-447B-8D85-6A9B7C611DC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{85A2C01E-876D-447B-8D85-6A9B7C611DC2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED5B106B-F724-4FC8-8365-70564597CE29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED5B106B-F724-4FC8-8365-70564597CE29}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED5B106B-F724-4FC8-8365-70564597CE29}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED5B106B-F724-4FC8-8365-70564597CE29}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7746E3D6-8F73-4354-A53C-DE9C9655F837}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7746E3D6-8F73-4354-A53C-DE9C9655F837}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7746E3D6-8F73-4354-A53C-DE9C9655F837}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7746E3D6-8F73-4354-A53C-DE9C9655F837}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2394BA13-2EE6-4E5A-964D-1F1E1FFE7CCC}
+	EndGlobalSection
+EndGlobal
