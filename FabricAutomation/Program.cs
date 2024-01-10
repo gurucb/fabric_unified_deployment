@@ -11,11 +11,23 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IFabricService, FabricService>();
-
+builder.Services.AddCors
+    (options =>
+    {
+        options.AddPolicy("AllowAny",
+            builder =>
+            {
+                builder.AllowAnyOrigin()
+                       .AllowAnyHeader()
+                       .AllowAnyMethod();
+            });
+    });
 var app = builder.Build();
 
 app.UseLogging();
 app.UseException();
+app.UseCors("AllowAny");
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
