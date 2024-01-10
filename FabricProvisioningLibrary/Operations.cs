@@ -22,7 +22,7 @@
             WorkspaceRequest payload, 
             [Optional] string correlationId)
         {
-            this.logger?.LogInformation("Invoked the 'Create' operation.");
+            this.logger?.LogInformation("Invoked the 'Create Workspace' operation.");
             this.logger?.LogInformation(JsonSerializer.Serialize<WorkspaceRequest>(payload));
 
             this.client.BaseAddress = new Uri("https://api.fabric.microsoft.com/");
@@ -58,7 +58,7 @@
             GetWorkspaceRequest payload,
             [Optional] string correlationId)
         {
-            this.logger?.LogInformation("Invoked the 'Get' operation.");
+            this.logger?.LogInformation("Invoked the 'Get Workspace' operation.");
             this.logger?.LogInformation(JsonSerializer.Serialize<GetWorkspaceRequest>(payload));
 
             this.client.BaseAddress = new Uri("https://api.fabric.microsoft.com/");

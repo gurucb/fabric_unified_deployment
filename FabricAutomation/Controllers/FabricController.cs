@@ -11,7 +11,6 @@ namespace FabricAutomation.Controllers
     [Route("api/[controller]")]
     public class FabricController : ControllerBase
     {
-
         private readonly ILogger<FabricController> _logger;
         private readonly IFabricService _fabricService;
         private readonly ILogger<Operations> _loggerOpeartion;

@@ -57,7 +57,7 @@ rootCommand.AddCommand(createCommand);
 
 createCommand.SetHandler((token, payload, correlationId) =>
 {
-    var response = payload != null ? operations?.Create(token, payload) : default;
+    var response = payload != null ? operations?.CreateWorkspace(token, payload) : default;
     if (response != null)
     {
         logger?.LogInformation(JsonSerializer.Serialize<WorkspaceResponse>(response));
@@ -89,7 +89,7 @@ rootCommand.AddCommand(getCommand);
 getCommand.SetHandler((token, workspaceId, correlationId) =>
 {
     var request = new GetWorkspaceRequest { WorkspaceId = workspaceId };
-    var response = operations?.Get(token, request, correlationId);
+    var response = operations?.GetWorkspace(token, request, correlationId);
     if (response != null)
     {
         logger?.LogInformation(JsonSerializer.Serialize<GetWorkspaceResponse>(response));
@@ -120,7 +120,7 @@ rootCommand.AddCommand(listCommand);
 listCommand.SetHandler((token, continuationToken, correlationId) =>
 {
     var request = new ListWorksapceRequest { ContinuationToken = continuationToken };
-    var response = operations?.List(token, request, correlationId);
+    var response = operations?.ListWorkspace(token, request, correlationId);
     if (response != null)
     {
         logger?.LogInformation(JsonSerializer.Serialize<ListWorkspaceResponse>(response));
