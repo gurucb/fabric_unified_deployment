@@ -6,6 +6,7 @@
     using Microsoft.Extensions.Logging;
     using Microsoft.Fabric.Provisioning.Library.Models;
     using System.Text.Json;
+    using System.Runtime.CompilerServices;
 
     public class Operations
     {
@@ -125,12 +126,12 @@
         }
 
 
-        public ListWorkspaceResponse? DeleteWorkspace(string token,
-    ListWorksapceRequest payload,
+        public DeleteWorkspaceResponse? DeleteWorkspace(string token,
+    DeleteWorkspaceRequest payload,
     [Optional] string correlationId)
         {
             this.logger?.LogInformation("Invoked the 'List' operation.");
-            this.logger?.LogInformation(JsonSerializer.Serialize<ListWorksapceRequest>(payload));
+            this.logger?.LogInformation(JsonSerializer.Serialize<DeleteWorkspaceRequest>(payload));
 
             this.client.BaseAddress = new Uri("https://api.fabric.microsoft.com/");
             this.client.DefaultRequestHeaders.Accept.Clear();
@@ -140,12 +141,12 @@
             try
             {
 
-                var continuationToken = payload.ContinuationToken;
-                var responseMessage = this.client.GetAsync($"v1/workspaces?continuationToken={continuationToken}").Result;
+                var workspaceId = payload.WorkspaceId;
+                var responseMessage = this.client.GetAsync($"v1/workspaces/{workspaceId}").Result;
 
                 if (responseMessage.IsSuccessStatusCode)
                 {
-                    return responseMessage.Content?.ReadFromJsonAsync<ListWorkspaceResponse>().Result;
+                    return responseMessage.Content?.ReadFromJsonAsync<DeleteWorkspaceResponse>().Result;
                 }
                 else
                 {
