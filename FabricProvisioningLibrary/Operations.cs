@@ -127,8 +127,8 @@
 
 
         public DeleteWorkspaceResponse? DeleteWorkspace(string token,
-    DeleteWorkspaceRequest payload,
-    [Optional] string correlationId)
+        DeleteWorkspaceRequest payload,
+        [Optional] string correlationId)
         {
             this.logger?.LogInformation("Invoked the 'List' operation.");
             this.logger?.LogInformation(JsonSerializer.Serialize<DeleteWorkspaceRequest>(payload));
@@ -196,12 +196,12 @@
             }
         }
 
-        public ListWorkspaceResponse? GetItem(string token,
-        ListWorksapceRequest payload,
+        public GetItemResponse? GetItem(string token,
+        GetItemRequest payload,
         [Optional] string correlationId)
         {
             this.logger?.LogInformation("Invoked the 'List' operation.");
-            this.logger?.LogInformation(JsonSerializer.Serialize<ListWorksapceRequest>(payload));
+            this.logger?.LogInformation(JsonSerializer.Serialize<GetItemRequest>(payload));
 
             this.client.BaseAddress = new Uri("https://api.fabric.microsoft.com/");
             this.client.DefaultRequestHeaders.Accept.Clear();
@@ -211,16 +211,17 @@
             try
             {
 
-                var continuationToken = payload.ContinuationToken;
-                var responseMessage = this.client.GetAsync($"v1/workspaces?continuationToken={continuationToken}").Result;
+                var workspaceId = payload.WorkspaceId;
+                var itemId = payload.itemId;
+                var responseMessage = this.client.GetAsync($"v1/workspaces/{workspaceId}/items/{itemId}").Result;
 
                 if (responseMessage.IsSuccessStatusCode)
                 {
-                    return responseMessage.Content?.ReadFromJsonAsync<ListWorkspaceResponse>().Result;
+                    return responseMessage.Content?.ReadFromJsonAsync<GetItemResponse>().Result;
                 }
                 else
                 {
-                    this.logger?.LogError(500, "Failed to list the resource.");
+                    this.logger?.LogError(500, "Failed to get the item.");
                     return default;
                 }
             }

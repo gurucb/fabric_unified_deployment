@@ -130,46 +130,46 @@
                 };
             }
 
-        [HttpGet("ListWorkspace")]
-        [ValidateRequest]
-        public ListWorkspaceResponse ListWorkspace(ListWorksapceRequest resource)
-        {
-            try
+            [HttpGet("ListWorkspace")]
+            [ValidateRequest]
+            public ListWorkspaceResponse ListWorkspace(ListWorksapceRequest resource)
             {
-                var operations = new Operations(_loggerOpeartion);
-
-                _logger.LogInformation($"Getting list of worksapces.");
-
-                string token = _configuration["ApiSettings:Token"];
-                string correlationId = "your_correlation_id";
-
-                // Call the Create method from the Operations class
-                var listWorkspaceResponse = operations.ListWorkspace(token, resource, correlationId);
-
-                if (listWorkspaceResponse != null)
+                try
                 {
-                    return new ListWorkspaceResponse
+                    var operations = new Operations(_loggerOpeartion);
+
+                    _logger.LogInformation($"Getting list of worksapces.");
+
+                    string token = _configuration["ApiSettings:Token"];
+                    string correlationId = "your_correlation_id";
+
+                    // Call the Create method from the Operations class
+                    var listWorkspaceResponse = operations.ListWorkspace(token, resource, correlationId);
+
+                    if (listWorkspaceResponse != null)
                     {
-                        ContinuationToken= listWorkspaceResponse.ContinuationToken,
-                        ContinuationUri= listWorkspaceResponse.ContinuationUri,
-                        Value= listWorkspaceResponse.Value
-                    };
+                        return new ListWorkspaceResponse
+                        {
+                            ContinuationToken= listWorkspaceResponse.ContinuationToken,
+                            ContinuationUri= listWorkspaceResponse.ContinuationUri,
+                            Value= listWorkspaceResponse.Value
+                        };
+                    }
+                    else
+                    {
+                        _logger?.LogError(500, "Failed to list the resources.");
+                        return null;
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    _logger?.LogError(500, "Failed to list the resources.");
+
+                    _logger?.LogError(500, ex, message: ex.Message);
                     return null;
                 }
             }
-            catch (Exception ex)
-            {
-
-                _logger?.LogError(500, ex, message: ex.Message);
-                return null;
-            }
-        }
        
-        [HttpDelete]
+            [HttpDelete]
             [ValidateRequest]
             public DeleteWorkspaceResponse DeleteWorkspace([FromQuery] FabricResource resource)
             {
@@ -214,48 +214,90 @@
             }
 
             [HttpPost("CreateItem")]
-                [ValidateRequest]
-                public CreateItemResponse CreateItem(CreateItemRequest resource)
+            [ValidateRequest]
+            public CreateItemResponse CreateItem(CreateItemRequest resource)
                 {
-                    try
-                    {
-                        var operations = new Operations(_loggerOpeartion);
+                 try
+                 {
+                     var operations = new Operations(_loggerOpeartion);
 
-                        _logger.LogInformation($"Creating item {resource.DisplayName}.");
+                     _logger.LogInformation($"Creating item {resource.DisplayName}.");
 
 
-                        string token = _configuration["ApiSettings:Token"];
-                        string correlationId = "your_correlation_id";
+                      string token = _configuration["ApiSettings:Token"];
+                      string correlationId = "your_correlation_id";
 
-                        // Call the Create method from the Operations class
-                        var createItemResponse = operations.CreateItem(token, resource, correlationId);
+                      // Call the Create method from the Operations class
+                      var createItemResponse = operations.CreateItem(token, resource, correlationId);
 
-                        if (createItemResponse != null)
-                        {
-                        return new CreateItemResponse
-                        {
+                      if (createItemResponse != null)
+                      {
+                          return new CreateItemResponse
+                          {
 
-                                Description = !string.IsNullOrEmpty(createItemResponse.Description) ? createItemResponse.Description:"",
-                                DisplayName = !string.IsNullOrEmpty(createItemResponse.DisplayName)?createItemResponse.DisplayName:"",
-                                ID = !string.IsNullOrWhiteSpace(createItemResponse.ID)? createItemResponse.ID:"",
-                                Type = !string.IsNullOrEmpty(createItemResponse.Type)? createItemResponse.Type:"",
-                                WorkspaceId = !string.IsNullOrEmpty(createItemResponse.WorkspaceId)?createItemResponse.WorkspaceId:""
-                            };
-                        }
-                        else
-                        {
+                                    Description = !string.IsNullOrEmpty(createItemResponse.Description) ? createItemResponse.Description:"",
+                                    DisplayName = !string.IsNullOrEmpty(createItemResponse.DisplayName)?createItemResponse.DisplayName:"",
+                                    ID = !string.IsNullOrWhiteSpace(createItemResponse.ID)? createItemResponse.ID:"",
+                                    Type = !string.IsNullOrEmpty(createItemResponse.Type)? createItemResponse.Type:"",
+                                    WorkspaceId = !string.IsNullOrEmpty(createItemResponse.WorkspaceId)?createItemResponse.WorkspaceId:""
+                          };
+                      }
+                      else
+                      {
                             _logger?.LogError(500, "Failed to create the resource.");
                             return null;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
+                      }
+                 }
+                 catch (Exception ex)
+                 {
 
                         _logger?.LogError(500, ex, message: ex.Message);
                         return null;
-                    }
+                 }
+            }
+
+
+        [HttpGet("GetItem")]
+        [ValidateRequest]
+        public GetItemResponse GetItem([FromQuery] GetItemRequest resource)
+        {
+            try
+            {
+                var operations = new Operations(_loggerOpeartion);
+
+                _logger.LogInformation($"getting item");
+
+
+                string token = _configuration["ApiSettings:Token"];
+                string correlationId = "your_correlation_id";
+
+                // Call the Create method from the Operations class
+                var getItemResponse = operations.GetItem(token, resource, correlationId);
+
+                if (getItemResponse != null)
+                {
+                    return new GetItemResponse
+                    {
+
+                        Description = !string.IsNullOrEmpty(getItemResponse.Description) ? getItemResponse.Description : "",
+                        DisplayName = !string.IsNullOrEmpty(getItemResponse.DisplayName) ? getItemResponse.DisplayName : "",
+                        Id = !string.IsNullOrWhiteSpace(getItemResponse.Id) ? getItemResponse.Id : "",
+                        Type = !string.IsNullOrEmpty(getItemResponse.Type) ? getItemResponse.Type : "",
+                        WorkspaceId = !string.IsNullOrEmpty(getItemResponse.WorkspaceId) ? getItemResponse.WorkspaceId : ""
+                    };
                 }
+                else
+                {
+                    _logger?.LogError(500, "Failed to create the resource.");
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
 
-
+                _logger?.LogError(500, ex, message: ex.Message);
+                return null;
+            }
         }
+    }
     }
