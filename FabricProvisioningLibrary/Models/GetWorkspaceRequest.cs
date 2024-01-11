@@ -10,7 +10,7 @@ namespace Microsoft.Fabric.Provisioning.Library.Models
     public class GetWorkspaceRequest
     {
 
-        [JsonPropertyName("WorkspaceId")]
+        [JsonPropertyName("workspaceId")]
         public required string WorkspaceId { get; set; }
     }
 }

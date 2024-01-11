@@ -160,12 +160,12 @@
             }
         }
 
-        public ListWorkspaceResponse? CreateItem(string token,
-            ListWorksapceRequest payload,
+        public CreateItemResponse? CreateItem(string token,
+            CreateItemRequest payload,
             [Optional] string correlationId)
         {
-            this.logger?.LogInformation("Invoked the 'List' operation.");
-            this.logger?.LogInformation(JsonSerializer.Serialize<ListWorksapceRequest>(payload));
+            this.logger?.LogInformation("Invoked the 'create item' operation.");
+            this.logger?.LogInformation(JsonSerializer.Serialize<CreateItemRequest>(payload));
 
             this.client.BaseAddress = new Uri("https://api.fabric.microsoft.com/");
             this.client.DefaultRequestHeaders.Accept.Clear();
@@ -175,16 +175,16 @@
             try
             {
 
-                var continuationToken = payload.ContinuationToken;
-                var responseMessage = this.client.GetAsync($"v1/workspaces?continuationToken={continuationToken}").Result;
+                var workspaceId = payload.WorkspaceId;
+                var responseMessage = this.client.PostAsJsonAsync<CreateItemRequest>($"v1/workspaces/{workspaceId}/items",payload).Result;
 
                 if (responseMessage.IsSuccessStatusCode)
                 {
-                    return responseMessage.Content?.ReadFromJsonAsync<ListWorkspaceResponse>().Result;
+                    return responseMessage.Content?.ReadFromJsonAsync<CreateItemResponse>().Result;
                 }
                 else
                 {
-                    this.logger?.LogError(500, "Failed to list the resource.");
+                    this.logger?.LogError(500, "Failed to create the item resource.");
                     return default;
                 }
             }
