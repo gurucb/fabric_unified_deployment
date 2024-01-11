@@ -44,7 +44,7 @@ namespace FabricAutomation.Controllers
                 string correlationId = "your_correlation_id";
 
                 // Call the Create method from the Operations class
-                var workspaceResponse = operations.CreateWorkspace(token, ConvertToWorkspaceRequest(resource), correlationId);
+                var workspaceResponse = operations.CreateWorkspace(token, ConvertToCreateWorkspaceRequest(resource), correlationId);
 
                 if (workspaceResponse != null)
                 {
@@ -71,7 +71,7 @@ namespace FabricAutomation.Controllers
             }
         }
 
-        private WorkspaceRequest ConvertToWorkspaceRequest(FabricResource fabricResource)
+        private WorkspaceRequest ConvertToCreateWorkspaceRequest(FabricResource fabricResource)
         {
 
             return new WorkspaceRequest
@@ -79,6 +79,54 @@ namespace FabricAutomation.Controllers
                 DisplayName = fabricResource.DisplayName,
                 Description = fabricResource.Description,
 
+            };
+        }
+
+        [HttpGet]
+        [ValidateRequest]
+        public GetWorkspaceResponse GetWorkspace([FromQuery] FabricResource resource)
+        {
+            try
+            {
+                var operations = new Operations(_loggerOpeartion);
+
+                _logger.LogInformation($"Getting resource {resource.DisplayName}.");
+
+                string token = _configuration["ApiSettings:Token"];
+                string correlationId = "your_correlation_id";
+
+                // Call the Create method from the Operations class
+                var getworkspaceResponse = operations.GetWorkspace(token, ConvertToGetWorkspaceRequest(resource), correlationId);
+
+                if (getworkspaceResponse != null)
+                {
+                    return new GetWorkspaceResponse
+                    {
+                        Id = getworkspaceResponse.Id,
+                        DisplayName = getworkspaceResponse.DisplayName,
+                        Description = getworkspaceResponse.Description,
+                        Type = getworkspaceResponse.Type,
+                        capacityAssignmentProgress=getworkspaceResponse.capacityAssignmentProgress,
+                    };
+                }
+                else
+                {
+                    _logger?.LogError(500, "Failed to create the resource.");
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                _logger?.LogError(500, ex, message: ex.Message);
+                return null;
+            }
+        }
+        private GetWorkspaceRequest ConvertToGetWorkspaceRequest(FabricResource fabricResource)
+        {
+            return new GetWorkspaceRequest
+            {
+                WorkspaceId = fabricResource.WorkspaceId
             };
         }
 

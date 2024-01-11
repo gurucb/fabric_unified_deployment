@@ -10,14 +10,6 @@ namespace Microsoft.Fabric.Provisioning.Library.Models
     public class GetWorkspaceResponse : WorkspaceResponse
     {
         [JsonPropertyName("capacityAssignmentProgress")]
-        public required CapacityAssignmentProgress capacityAssignmentProgress { get; set; }
+        public required string capacityAssignmentProgress { get; set; }
     }
-
-    public  class CapacityAssignmentProgress
-    {
-        public const string Completed = "Completed";
-        public const string Failed = "Failed";
-        public const string InProgress = "InProgress";
-    }
-
 }
