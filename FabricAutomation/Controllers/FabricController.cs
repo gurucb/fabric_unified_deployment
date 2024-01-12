@@ -28,7 +28,6 @@
                     .Build();
             }
 
-
             [HttpPost("CreateWorkspace")]
             [ValidateRequest]
             public FabricResource CreateWorkspace(FabricResource resource)
@@ -162,7 +161,7 @@
                 }
             }
        
-            [HttpDelete]
+            [HttpDelete("DeleteWorkspace")]
             [ValidateRequest]
             public DeleteWorkspaceResponse DeleteWorkspace([FromQuery] DeleteWorkspaceRequest resource)
             {
@@ -242,7 +241,6 @@
                  }
             }
 
-
             [HttpGet("GetItem")]
             [ValidateRequest]
             public GetItemResponse GetItem([FromQuery] GetItemRequest resource)
@@ -318,6 +316,44 @@
                     else
                     {
                         _logger?.LogError(500, "Failed to update the item.");
+                        return null;
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                    _logger?.LogError(500, ex, message: ex.Message);
+                    return null;
+                }
+            }
+
+            [HttpDelete("DeleteItem")]
+            [ValidateRequest]
+            public DeleteItemResponse DeleteItem([FromQuery]DeleteItemRequest resource)
+            {
+                try
+                {
+                    var operations = new Operations(_loggerOpeartion);
+
+                    _logger.LogInformation($"deleting item");
+
+
+                    string token = _configuration["ApiSettings:Token"];
+                    string correlationId = "your_correlation_id";
+
+                    // Call the Create method from the Operations class
+                    var deleteItemResponse = operations.DeleteItem(token, resource, correlationId);
+
+                    if (deleteItemResponse != null)
+                    {
+                        return new DeleteItemResponse
+                        {
+                            StatusCode=deleteItemResponse.StatusCode
+                        };
+                    }
+                    else
+                    {
+                        _logger?.LogError(500, "Failed to delete the item.");
                         return null;
                     }
                 }

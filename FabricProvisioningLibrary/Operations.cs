@@ -45,7 +45,7 @@
                 }
                 else
                 {
-                    this.logger?.LogError(500, "Failed to create the resource.");
+                    this.logger?.LogError(500, "Failed to create the workspace resource.");
                     return default;
                 }
             }
@@ -79,7 +79,7 @@
                 }
                 else
                 {
-                    this.logger?.LogError(500, "Failed to get the resource.");
+                    this.logger?.LogError(500, "Failed to get the workspace resource.");
                     return default;
                 }
             }
@@ -114,7 +114,7 @@
                 }
                 else
                 {
-                    this.logger?.LogError(500, "Failed to list the resource.");
+                    this.logger?.LogError(500, "Failed to list the workspace resource.");
                     return default;
                 }
             }
@@ -142,7 +142,7 @@
             {
 
                 var workspaceId = payload.WorkspaceId;
-                var responseMessage = this.client.GetAsync($"v1/workspaces/{workspaceId}").Result;
+                var responseMessage = this.client.DeleteAsync($"v1/workspaces/{workspaceId}").Result;
 
                 if (responseMessage.IsSuccessStatusCode)
                 {
@@ -150,7 +150,7 @@
                 }
                 else
                 {
-                    this.logger?.LogError(500, "Failed to list the resource.");
+                    this.logger?.LogError(500, "Failed to delete the workspace resource.");
                     return default;
                 }
             }
@@ -221,7 +221,7 @@
                 }
                 else
                 {
-                    this.logger?.LogError(500, "Failed to get the item.");
+                    this.logger?.LogError(500, "Failed to get the item resource.");
                     return default;
                 }
             }
@@ -257,7 +257,7 @@
                 }
                 else
                 {
-                    this.logger?.LogError(500, "Failed to update the resource.");
+                    this.logger?.LogError(500, "Failed to update the item resource.");
                     return default;
                 }
             }
@@ -268,12 +268,12 @@
             }
         }
 
-        public ListWorkspaceResponse? DeleteItem(string token,
-        ListWorksapceRequest payload,
+        public DeleteItemResponse? DeleteItem(string token,
+        DeleteItemRequest payload,
             [Optional] string correlationId)
         {
             this.logger?.LogInformation("Invoked the 'List' operation.");
-            this.logger?.LogInformation(JsonSerializer.Serialize<ListWorksapceRequest>(payload));
+            this.logger?.LogInformation(JsonSerializer.Serialize<DeleteItemRequest>(payload));
 
             this.client.BaseAddress = new Uri("https://api.fabric.microsoft.com/");
             this.client.DefaultRequestHeaders.Accept.Clear();
@@ -282,17 +282,17 @@
             this.client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             try
             {
-
-                var continuationToken = payload.ContinuationToken;
-                var responseMessage = this.client.GetAsync($"v1/workspaces?continuationToken={continuationToken}").Result;
+                var workspaceId = payload.WorkspaceId;
+                var itemId = payload.itemId;
+                var responseMessage = this.client.DeleteAsync($"v1/workspaces/{workspaceId}/items/{itemId}").Result;
 
                 if (responseMessage.IsSuccessStatusCode)
                 {
-                    return responseMessage.Content?.ReadFromJsonAsync<ListWorkspaceResponse>().Result;
+                    return responseMessage.Content?.ReadFromJsonAsync<DeleteItemResponse>().Result;
                 }
                 else
                 {
-                    this.logger?.LogError(500, "Failed to list the resource.");
+                    this.logger?.LogError(500, "Failed to delete the item resource.");
                     return default;
                 }
             }
