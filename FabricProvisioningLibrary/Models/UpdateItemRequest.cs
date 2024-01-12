@@ -8,10 +8,17 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Fabric.Provisioning.Library.Models
 {
-    public class GetWorkspaceRequest
+    public class UpdateItemRequest
     {
         [Required]
         [JsonPropertyName("workspaceId")]
         public required string WorkspaceId { get; set; }
+        [Required]
+        [JsonPropertyName("itemId")]
+        public required string ItemId { get; set; }
+        [JsonPropertyName("description")]
+        public  string? Description { get; set; }
+        [JsonPropertyName("displayName")]
+        public  string? DisplayName { get; set; }
     }
 }
