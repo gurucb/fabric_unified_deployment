@@ -73,3 +73,17 @@
 /FabricProvisioningLibrary/obj/Debug/net7.0/Microsoft.Fabric.Provisioning.Library.dll
 /FabricProvisioningLibrary/obj/Debug/net7.0/Microsoft.Fabric.Provisioning.Library.pdb
 /FabricProvisioningLibrary/obj/Debug/net7.0/refint/Microsoft.Fabric.Provisioning.Library.dll
+/.vs
+/FabricAutomation/appsettings.json
+/FabricAutomation/obj/Release/net7.0/FabricAutomation.AssemblyInfo.cs
+/FabricAutomation/obj/Release/net7.0/FabricAutomation.AssemblyInfoInputs.cache
+/FabricAutomation/obj/Release/net7.0/FabricAutomation.assets.cache
+/FabricAutomation/obj/Release/net7.0/FabricAutomation.GeneratedMSBuildEditorConfig.editorconfig
+/FabricProvisioningClient/obj/Release/net7.0/FabricProvisioningClient.AssemblyInfo.cs
+/FabricProvisioningClient/obj/Release/net7.0/FabricProvisioningClient.AssemblyInfoInputs.cache
+/FabricProvisioningClient/obj/Release/net7.0/FabricProvisioningClient.assets.cache
+/FabricProvisioningClient/obj/Release/net7.0/FabricProvisioningClient.GeneratedMSBuildEditorConfig.editorconfig
+/FabricProvisioningLibrary/obj/Release/net7.0/FabricProvisioningLibrary.AssemblyInfo.cs
+/FabricProvisioningLibrary/obj/Release/net7.0/FabricProvisioningLibrary.AssemblyInfoInputs.cache
+/FabricProvisioningLibrary/obj/Release/net7.0/FabricProvisioningLibrary.assets.cache
+/FabricProvisioningLibrary/obj/Release/net7.0/FabricProvisioningLibrary.GeneratedMSBuildEditorConfig.editorconfig
