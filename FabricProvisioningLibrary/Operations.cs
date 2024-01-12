@@ -19,8 +19,8 @@
             this.client = new();
         }
 
-        public WorkspaceResponse? CreateWorkspace(string token, 
-            WorkspaceRequest payload, 
+        public WorkspaceResponse? CreateWorkspace(string token,
+            WorkspaceRequest payload,
             [Optional] string correlationId)
         {
             this.logger?.LogInformation("Invoked the 'Create Workspace' operation.");
@@ -49,7 +49,8 @@
                     return default;
                 }
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 this.logger?.LogError(500, ex, message: ex.Message);
                 return default;
             }
@@ -177,7 +178,7 @@
             {
 
                 var workspaceId = payload.WorkspaceId;
-                var responseMessage = this.client.PostAsJsonAsync<CreateItemRequest>($"v1/workspaces/{workspaceId}/items",payload).Result;
+                var responseMessage = this.client.PostAsJsonAsync<CreateItemRequest>($"v1/workspaces/{workspaceId}/items", payload).Result;
 
                 if (responseMessage.IsSuccessStatusCode)
                 {
@@ -303,39 +304,41 @@
             }
         }
 
-        public ListWorkspaceResponse? ListItems(string token,
-        ListWorksapceRequest payload,
+        public ListItemResponse? ListItems(string token,
+        ListItemRequest payload,
         [Optional] string correlationId)
+        {
+            this.logger?.LogInformation("Invoked the 'List' item operation.");
+            this.logger?.LogInformation(JsonSerializer.Serialize<ListItemRequest>(payload));
+
+            this.client.BaseAddress = new Uri("https://api.fabric.microsoft.com/");
+            this.client.DefaultRequestHeaders.Accept.Clear();
+            this.client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            this.client.DefaultRequestHeaders.Add("User-Agent", "Microsoft Fabric Provisioning");
+            this.client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            try
             {
-                this.logger?.LogInformation("Invoked the 'List' operation.");
-                this.logger?.LogInformation(JsonSerializer.Serialize<ListWorksapceRequest>(payload));
 
-                this.client.BaseAddress = new Uri("https://api.fabric.microsoft.com/");
-                this.client.DefaultRequestHeaders.Accept.Clear();
-                this.client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                this.client.DefaultRequestHeaders.Add("User-Agent", "Microsoft Fabric Provisioning");
-                this.client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                try
+                var workspaceId = payload.WorkspaceId;
+                var type = payload.Type;
+                var continuationToken = payload.ContinuationToken;
+                var responseMessage = this.client.GetAsync($"https://api.fabric.microsoft.com/v1/workspaces/{workspaceId}/items?type={type}&continuationToken={continuationToken}").Result;
+
+                if (responseMessage.IsSuccessStatusCode)
                 {
-
-                    var continuationToken = payload.ContinuationToken;
-                    var responseMessage = this.client.GetAsync($"v1/workspaces?continuationToken={continuationToken}").Result;
-
-                    if (responseMessage.IsSuccessStatusCode)
-                    {
-                        return responseMessage.Content?.ReadFromJsonAsync<ListWorkspaceResponse>().Result;
-                    }
-                    else
-                    {
-                        this.logger?.LogError(500, "Failed to list the resource.");
-                        return default;
-                    }
+                    return responseMessage.Content?.ReadFromJsonAsync<ListItemResponse>().Result;
                 }
-                catch (Exception ex)
+                else
                 {
-                    this.logger?.LogError(500, ex, message: ex.Message);
+                    this.logger?.LogError(500, "Failed to list the resource.");
                     return default;
                 }
             }
+            catch (Exception ex)
+            {
+                this.logger?.LogError(500, ex, message: ex.Message);
+                return default;
+            }
+        }
     }
 }
