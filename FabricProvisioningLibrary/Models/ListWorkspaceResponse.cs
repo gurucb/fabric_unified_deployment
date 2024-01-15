@@ -10,10 +10,10 @@ namespace Microsoft.Fabric.Provisioning.Library.Models
     public class ListWorkspaceResponse
     {
         [JsonPropertyName("ContinuationToken ")]
-        public required string ContinuationToken { get; set; }
+        public string ContinuationToken { get; set; }
 
         [JsonPropertyName("ContinuationUri ")]
-        public required string ContinuationUri  { get; set; }
+        public  string ContinuationUri  { get; set; }
 
         [JsonPropertyName("Value")]
         public required WorkspaceResponse[] Value { get; set; }

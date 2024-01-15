@@ -15,9 +15,9 @@ namespace Microsoft.Fabric.Provisioning.Library.Models
         public required string WorkspaceId { get; set; }
 
         [JsonPropertyName("continuationToken")]
-        public required string ContinuationToken { get; set; }
+        public  string? ContinuationToken { get; set; }
 
         [JsonPropertyName("type")]
-        public required string Type { get; set; }
+        public  string? Type { get; set; }
     }
 }

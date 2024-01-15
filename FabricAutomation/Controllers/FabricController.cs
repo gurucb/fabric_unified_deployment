@@ -122,9 +122,9 @@ namespace FabricAutomation.Controllers
             }
         }
 
-        [HttpGet("ListWorkspace")]
+        [HttpGet("ListWorkspaces")]
         [ValidateRequest]
-        public ListWorkspaceResponse ListWorkspace(ListWorksapceRequest resource)
+        public ListWorkspaceResponse ListWorkspace([FromQuery]ListWorksapceRequest resource)
         {
             try
             {
@@ -142,7 +142,7 @@ namespace FabricAutomation.Controllers
                 {
                     return new ListWorkspaceResponse
                     {
-                        ContinuationToken = listWorkspaceResponse.ContinuationToken,
+                        ContinuationToken = !string.IsNullOrWhiteSpace(listWorkspaceResponse.ContinuationToken)?listWorkspaceResponse.ContinuationToken:"",
                         ContinuationUri = listWorkspaceResponse.ContinuationUri,
                         Value = listWorkspaceResponse.Value
                     };
@@ -284,6 +284,45 @@ namespace FabricAutomation.Controllers
             }
         }
 
+        [HttpGet("ListItems")]
+        [ValidateRequest]
+        public ListItemResponse ListItem([FromQuery] ListItemRequest resource)
+        {
+            try
+            {
+                var operations = new Operations(_loggerOpeartion);
+
+                _logger.LogInformation($"listing item");
+
+                string token = _configuration["ApiSettings:Token"];
+                string correlationId = "your_correlation_id";
+
+                // Call the Create method from the Operations class
+                var listItemResponse = operations.ListItems(token, resource, correlationId);
+
+                if (listItemResponse != null)
+                {
+                    return new ListItemResponse
+                    {
+                        ContinuationToken = listItemResponse.ContinuationToken,
+                        ContinuationUri = listItemResponse.ContinuationUri,
+                        Value = listItemResponse.Value
+                    };
+                }
+                else
+                {
+                    _logger?.LogError(500, "Failed to list the items.");
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                _logger?.LogError(500, ex, message: ex.Message);
+                return null;
+            }
+        }
+
         [HttpPatch("UpdateItem")]
         [ValidateRequest]
         public UpdateItemResponse UpdateItem(UpdateItemRequest resource)
@@ -364,43 +403,6 @@ namespace FabricAutomation.Controllers
             }
         }
 
-        [HttpDelete("ListItem")]
-        [ValidateRequest]
-        public ListItemResponse ListItem([FromQuery] ListItemRequest resource)
-        {
-            try
-            {
-                var operations = new Operations(_loggerOpeartion);
-
-                _logger.LogInformation($"listing item");
-
-                string token = _configuration["ApiSettings:Token"];
-                string correlationId = "your_correlation_id";
-
-                // Call the Create method from the Operations class
-                var listItemResponse = operations.ListItems(token, resource, correlationId);
-
-                if (listItemResponse != null)
-                {
-                    return new ListItemResponse
-                    {
-                        ContinuationToken = listItemResponse.ContinuationToken,
-                        ContinuationUri = listItemResponse.ContinuationUri,
-                        Value = listItemResponse.Value
-                    };
-                }
-                else
-                {
-                    _logger?.LogError(500, "Failed to list the items.");
-                    return null;
-                }
-            }
-            catch (Exception ex)
-            {
-
-                _logger?.LogError(500, ex, message: ex.Message);
-                return null;
-            }
-        }
+       
     }
 }

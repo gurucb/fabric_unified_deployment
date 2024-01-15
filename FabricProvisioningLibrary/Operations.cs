@@ -106,8 +106,16 @@
             try
             {
 
-                var continuationToken = payload.ContinuationToken;
-                var responseMessage = this.client.GetAsync($"v1/workspaces?continuationToken={continuationToken}").Result;
+                var continuationToken = !string.IsNullOrWhiteSpace(payload.ContinuationToken)? payload.ContinuationToken:"";
+                var responseMessage = default(HttpResponseMessage); 
+                if (!string.IsNullOrWhiteSpace(continuationToken))
+                {
+                    responseMessage = this.client.GetAsync($"v1/workspaces?continuationToken={continuationToken}").Result;
+                }
+                else
+                {
+                    responseMessage = this.client.GetAsync($"v1/workspaces").Result;
+                }
 
                 if (responseMessage.IsSuccessStatusCode)
                 {
@@ -320,10 +328,16 @@
             {
 
                 var workspaceId = payload.WorkspaceId;
-                var type = payload.Type;
-                var continuationToken = payload.ContinuationToken;
-                var responseMessage = this.client.GetAsync($"https://api.fabric.microsoft.com/v1/workspaces/{workspaceId}/items?type={type}&continuationToken={continuationToken}").Result;
-
+                var type = !string.IsNullOrWhiteSpace(payload.Type)?payload.Type:"";
+                var continuationToken = !string.IsNullOrWhiteSpace(payload.ContinuationToken)? payload.ContinuationToken:"";
+                var responseMessage = default(HttpResponseMessage);
+                if (!string.IsNullOrWhiteSpace(type) && !string.IsNullOrEmpty(continuationToken)) {
+                     responseMessage = this.client.GetAsync($"v1/workspaces/{workspaceId}/items?type={type}&continuationToken={continuationToken}").Result;
+                }
+                else
+                {
+                     responseMessage = this.client.GetAsync($"v1/workspaces/{workspaceId}/items").Result;
+                }
                 if (responseMessage.IsSuccessStatusCode)
                 {
                     return responseMessage.Content?.ReadFromJsonAsync<ListItemResponse>().Result;
