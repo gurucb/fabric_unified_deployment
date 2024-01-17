@@ -68,7 +68,46 @@ createCommand.SetHandler((token, payload, correlationId) =>
     }
 },
 tokenOption, payloadOption, correlationIdOption);
+//create item
 
+var payloadOptionForCreateitem = new Option<ProvisioningLibrary.Models.CreateItemRequest?>(
+            name: "--payload",
+            description: "The request payload or body for creating item",
+            parseArgument: result =>
+            {
+                if (result.Tokens.Count > 0)
+                {
+                    return JsonSerializer.Deserialize<CreateItemRequest>(result.Tokens.FirstOrDefault().Value);
+                }
+                else
+                {
+                    result.ErrorMessage = "--payload is empty.";
+                    return default;
+                }
+            })
+{ IsRequired = true };
+
+var createItemCommand = new Command("post", "creates item for a workspace.")
+{
+    tokenOption,
+    payloadOptionForCreateitem,
+    correlationIdOption
+};
+rootCommand.AddCommand(createItemCommand);
+
+createItemCommand.SetHandler((token, payloadOptionForCreateitem, correlationId) =>
+{
+    var response = payloadOptionForCreateitem != null ? operations?.CreateItem(token, payloadOptionForCreateitem) : default;
+    if (response != null)
+    {
+        logger?.LogInformation(JsonSerializer.Serialize<CreateItemResponse>(response));
+    }
+    else
+    {
+        logger?.LogError(500, "No response found.");
+    }
+},
+tokenOption, payloadOptionForCreateitem, correlationIdOption);
 
 //get workspace
 
