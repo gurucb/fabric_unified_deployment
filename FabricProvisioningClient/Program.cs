@@ -57,15 +57,24 @@ rootCommand.AddCommand(createCommand);
 
 createCommand.SetHandler((token, payload, correlationId) =>
 {
-    var response = payload != null ? operations?.CreateWorkspace(token, payload) : default;
-    if (response != null)
+    logger?.LogInformation(token);
+    try
     {
-        logger?.LogInformation(JsonSerializer.Serialize<WorkspaceResponse>(response));
+        var response = payload != null ? operations?.CreateWorkspace(token, payload) : default;
+        if (response != null)
+        {
+            logger?.LogInformation(JsonSerializer.Serialize<WorkspaceResponse>(response));
+        }
+        else
+        {
+            logger?.LogError(500, "No response found.");
+        }
     }
-    else
+    catch (Exception e)
     {
-        logger?.LogError(500, "No response found.");
+        logger?.LogError("Exception occured " + e);
     }
+   
 },
 tokenOption, payloadOption, correlationIdOption);
 //create item
@@ -87,7 +96,7 @@ var payloadOptionForCreateitem = new Option<ProvisioningLibrary.Models.CreateIte
             })
 { IsRequired = true };
 
-var createItemCommand = new Command("post", "creates item for a workspace.")
+var createItemCommand = new Command("createItem", "creates item for a workspace.")
 {
     tokenOption,
     payloadOptionForCreateitem,
