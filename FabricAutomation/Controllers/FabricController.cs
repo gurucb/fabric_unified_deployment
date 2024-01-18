@@ -4,6 +4,8 @@ using FabricAutomation.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Fabric.Provisioning.Library;
 using Microsoft.Fabric.Provisioning.Library.Models;
+using System.Diagnostics;
+using System.Text.Json;
 
 namespace FabricAutomation.Controllers
 {
@@ -105,7 +107,7 @@ namespace FabricAutomation.Controllers
                         DisplayName = getWorkspaceResponse.DisplayName,
                         Description = getWorkspaceResponse.Description,
                         Type = getWorkspaceResponse.Type,
-                        capacityAssignmentProgress= getWorkspaceResponse.capacityAssignmentProgress,
+                        capacityAssignmentProgress = getWorkspaceResponse.capacityAssignmentProgress,
                     };
                 }
                 else
@@ -124,7 +126,7 @@ namespace FabricAutomation.Controllers
 
         [HttpGet("ListWorkspaces")]
         [ValidateRequest]
-        public ListWorkspaceResponse ListWorkspace([FromQuery]ListWorksapceRequest resource)
+        public ListWorkspaceResponse ListWorkspace([FromQuery] ListWorksapceRequest resource)
         {
             try
             {
@@ -142,7 +144,7 @@ namespace FabricAutomation.Controllers
                 {
                     return new ListWorkspaceResponse
                     {
-                        ContinuationToken = !string.IsNullOrWhiteSpace(listWorkspaceResponse.ContinuationToken)?listWorkspaceResponse.ContinuationToken:"",
+                        ContinuationToken = !string.IsNullOrWhiteSpace(listWorkspaceResponse.ContinuationToken) ? listWorkspaceResponse.ContinuationToken : "",
                         ContinuationUri = listWorkspaceResponse.ContinuationUri,
                         Value = listWorkspaceResponse.Value
                     };
@@ -402,7 +404,54 @@ namespace FabricAutomation.Controllers
                 return null;
             }
         }
+        [HttpPost("CallMixin")]
+        public IActionResult CallMixin([FromBody] MixinRequest mixinRequest)
+        {
+            try
+            {
+                _logger.LogInformation("Calling the Mixin code");
 
-       
+
+
+                string displayname = mixinRequest.DisplayName;  
+                string description = mixinRequest.Description;
+                string token = _configuration["ApiSettings:Token"];
+
+                // Build the command
+                string command = $"porter install --param token=\"{token}\"  --param displayName=\"{displayname}\" --param description=\"{description}\" --cnab-file /home/kirthika/BundleFiles/.cnab/bundle.json --force";
+
+                // Start the process
+                var processStartInfo = new ProcessStartInfo
+                {
+                    FileName = "bash",
+                    Arguments = $"-c \"{command}\"",
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                using (var process = new Process { StartInfo = processStartInfo })
+                {
+                    process.Start();
+                    string output = process.StandardOutput.ReadToEnd();
+                    string error = process.StandardError.ReadToEnd();
+
+                    process.WaitForExit();
+
+                
+                    _logger.LogInformation($"Command Output: {output}");
+                    _logger.LogError($"Command Error: {error}");
+
+                    return Ok(new { Output = output, Error = error });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger?.LogError(500, ex, message: ex.Message);
+                return StatusCode(500, new { Error = ex.Message });
+            }
+        }
+
     }
 }
