@@ -9,5 +9,8 @@
 
         [JsonPropertyName("description")]
         public required string Description { get; set; }
+
+        [JsonPropertyName("capacityId")]
+        public required string CapacityId { get; set; }
     }
 }
