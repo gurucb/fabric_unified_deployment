@@ -416,9 +416,10 @@ namespace FabricAutomation.Controllers
                 string displayname = mixinRequest.DisplayName;  
                 string description = mixinRequest.Description;
                 string token = _configuration["ApiSettings:Token"];
+                string cnabFilePath = _configuration["ApiSettings:cnabFilePath"];
 
                 // Build the command
-                string command = $"porter install --param token=\"{token}\"  --param displayName=\"{displayname}\" --param description=\"{description}\" --cnab-file /home/kirthika/BundleFiles/.cnab/bundle.json --force";
+                string command = $"porter install --param token=\"{token}\"  --param displayName=\"{displayname}\" --param description=\"{description}\" --cnab-file {cnabFilePath} --force";
 
                 // Start the process
                 var processStartInfo = new ProcessStartInfo
