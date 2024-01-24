@@ -79,6 +79,7 @@ namespace FabricAutomation.Controllers
             {
                 DisplayName = fabricResource.DisplayName,
                 Description = fabricResource.Description,
+                CapacityId=fabricResource.CapacityId
 
             };
         }
