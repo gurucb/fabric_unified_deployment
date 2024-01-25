@@ -418,13 +418,13 @@ namespace FabricAutomation.Controllers
                 string workspaceDescription = mixinRequest.WorkspaceDescription;
                 string itemDisplayName = mixinRequest.ItemDisplayName;
                 string itemType=mixinRequest.ItemType;
-                string workspaceId = mixinRequest.WorkspaceId;
+                string workspaceId = !string.IsNullOrEmpty(mixinRequest.WorkspaceId)? mixinRequest.WorkspaceId : "abcd";
                 string capacityId=mixinRequest.CapacityId;
                 string token = _configuration["ApiSettings:Token"];
                 string cnabFilePath = _configuration["ApiSettings:cnabFilePath"];
 
                 // Build the command
-                string command = $"porter install --param token=\"{token}\"  --param workspaceDisplayName=\"{workspaceDisplayName}\" --param workspaceDescription=\"{workspaceDescription}\" --param itemDisplayName=\"{itemDisplayName}\"  --param itemType=\"{itemType}\" --param workspaceId=\"{workspaceId}\" --param capacityId=\"{capacityId}\" --cnab-file {cnabFilePath} --force";
+                string command = $"porter install --param token=\"{token}\" --param workspaceDisplayName=\"{workspaceDisplayName}\" --param workspaceDescription=\"{workspaceDescription}\" --param itemDisplayName=\"{itemDisplayName}\" --param itemType=\"{itemType}\" --param workspaceId=\"{workspaceId}\" --param capacityId=\"{capacityId}\" --cnab-file {cnabFilePath} --force";
 
                 // Start the process
                 var processStartInfo = new ProcessStartInfo
@@ -441,13 +441,13 @@ namespace FabricAutomation.Controllers
                 {
                     process.Start();
                     string output = process.StandardOutput.ReadToEnd();
-                    string error = process.StandardError.ReadToEnd();
+                    //string error = process.StandardError.ReadToEnd();
 
                     process.WaitForExit();
 
                 
                     _logger.LogInformation($"Command Output: {output}");
-                    _logger.LogError($"Command Error: {error}");
+                   // _logger.LogError($"Command Error: {error}");
 
                     return Ok(new { Output = output, Error = error });
                 }
