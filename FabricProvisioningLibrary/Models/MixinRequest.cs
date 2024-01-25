@@ -9,11 +9,18 @@ namespace Microsoft.Fabric.Provisioning.Library.Models
 {
     public class MixinRequest
     {
-        [JsonPropertyName("displayName")]
-        public required string DisplayName { get; set; }
+        [JsonPropertyName("workspaceDisplayName")]
+        public required string WorkspaceDisplayName { get; set; }
 
-        [JsonPropertyName("description")]
-        public required string Description { get; set; }
+        [JsonPropertyName("workspaceDescription")]
+        public required string WorkspaceDescription { get; set; }
+        [JsonPropertyName("itemDisplayName")]
+        public required string ItemDisplayName { get; set; }
+
+        [JsonPropertyName("itemType")]
+        public required string ItemType { get; set; }
+        [JsonPropertyName("workspaceId")]
+        public required string WorkspaceId { get; set; }
         [JsonPropertyName("capacityId")]
         public required string CapacityId { get; set; }
     }

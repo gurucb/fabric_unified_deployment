@@ -414,14 +414,17 @@ namespace FabricAutomation.Controllers
 
 
 
-                string displayname = mixinRequest.DisplayName;  
-                string description = mixinRequest.Description;
+                string workspaceDisplayName = mixinRequest.WorkspaceDisplayName;
+                string workspaceDescription = mixinRequest.WorkspaceDescription;
+                string itemDisplayName = mixinRequest.ItemDisplayName;
+                string itemType=mixinRequest.ItemType;
+                string workspaceId = mixinRequest.WorkspaceId;
                 string capacityId=mixinRequest.CapacityId;
                 string token = _configuration["ApiSettings:Token"];
                 string cnabFilePath = _configuration["ApiSettings:cnabFilePath"];
 
                 // Build the command
-                string command = $"porter install --param token=\"{token}\"  --param displayName=\"{displayname}\" --param description=\"{description}\" --param capacityId=\"{capacityId}\" --cnab-file {cnabFilePath} --force";
+                string command = $"porter install --param token=\"{token}\"  --param workspaceDisplayName=\"{workspaceDisplayName}\" --param workspaceDescription=\"{workspaceDescription}\" --param itemDisplayName=\"{itemDisplayName}\"  --param itemType=\"{itemType}\" --param workspaceId=\"{workspaceId}\" --param capacityId=\"{capacityId}\" --cnab-file {cnabFilePath} --force";
 
                 // Start the process
                 var processStartInfo = new ProcessStartInfo
