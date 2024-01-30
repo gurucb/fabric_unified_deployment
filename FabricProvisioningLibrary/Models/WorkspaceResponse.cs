@@ -20,5 +20,8 @@ namespace Microsoft.Fabric.Provisioning.Library.Models
 
         [JsonPropertyName("type")]
         public required string Type { get; set; }
+
+        [JsonPropertyName("capacityId")]
+        public string? CapacityId { get; set; }
     }
 }

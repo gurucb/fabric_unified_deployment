@@ -6,6 +6,7 @@ using Microsoft.Fabric.Provisioning.Library;
 using Microsoft.Fabric.Provisioning.Library.Models;
 using System.Diagnostics;
 using System.Text.Json;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FabricAutomation.Controllers
 {
@@ -56,6 +57,7 @@ namespace FabricAutomation.Controllers
                         DisplayName = workspaceResponse.DisplayName,
                         Description = workspaceResponse.Description,
                         Type = workspaceResponse.Type,
+                       CapacityId = workspaceResponse.CapacityId,
                     };
                 }
                 else
@@ -447,9 +449,11 @@ namespace FabricAutomation.Controllers
 
                 
                     _logger.LogInformation($"Command Output: {output}");
-                   // _logger.LogError($"Command Error: {error}");
+                    // _logger.LogError($"Command Error: {error}");
 
-                    return Ok(new { Output = output, Error = error });
+                   // return Ok(new { Output = output, Error = error });
+
+                    return Ok(new { Output = output });
                 }
             }
             catch (Exception ex)
