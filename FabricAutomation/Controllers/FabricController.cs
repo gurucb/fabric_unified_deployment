@@ -57,7 +57,7 @@ namespace FabricAutomation.Controllers
                         DisplayName = workspaceResponse.DisplayName,
                         Description = workspaceResponse.Description,
                         Type = workspaceResponse.Type,
-                       CapacityId = workspaceResponse.CapacityId,
+                        CapacityId = workspaceResponse.CapacityId,
                     };
                 }
                 else
