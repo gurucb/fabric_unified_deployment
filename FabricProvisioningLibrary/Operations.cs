@@ -23,9 +23,7 @@
                                           WorkspaceRequest payload,
                                           [Optional] string correlationId)
         {
-            this.logger?.LogInformation("Invoked the 'Create Workspace' operation.");
-            this.logger?.LogInformation(JsonSerializer.Serialize<WorkspaceRequest>(payload));
-
+           
             this.client.BaseAddress = new Uri("https://api.fabric.microsoft.com/");
             this.client.DefaultRequestHeaders.Accept.Clear();
             this.client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));

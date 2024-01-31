@@ -57,7 +57,6 @@ rootCommand.AddCommand(createCommand);
 
 createCommand.SetHandler((token, payload, correlationId) =>
 {
-    logger?.LogInformation(token);
     try
     {
         var response = payload != null ? operations?.CreateWorkspace(token, payload) : default;
