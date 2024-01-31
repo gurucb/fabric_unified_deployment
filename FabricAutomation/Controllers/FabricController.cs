@@ -420,7 +420,7 @@ namespace FabricAutomation.Controllers
                 string workspaceDescription = mixinRequest.WorkspaceDescription;
                 string itemDisplayName = mixinRequest.ItemDisplayName;
                 string itemType=mixinRequest.ItemType;
-                string workspaceId = !string.IsNullOrEmpty(mixinRequest.WorkspaceId)? mixinRequest.WorkspaceId : "abcd";
+                string workspaceId = "abcd";
                 string capacityId=mixinRequest.CapacityId;
                 string token = _configuration["ApiSettings:Token"];
                 string cnabFilePath = _configuration["ApiSettings:cnabFilePath"];
