@@ -19,8 +19,8 @@ namespace Microsoft.Fabric.Provisioning.Library.Models
 
         [JsonPropertyName("itemType")]
         public required string ItemType { get; set; }
-        [JsonPropertyName("workspaceId")]
-        public required string WorkspaceId { get; set; }
+        //[JsonPropertyName("workspaceId")]
+        //public required string WorkspaceId { get; set; }
         [JsonPropertyName("capacityId")]
         public required string CapacityId { get; set; }
     }
