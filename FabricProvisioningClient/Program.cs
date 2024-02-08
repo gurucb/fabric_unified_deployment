@@ -37,7 +37,7 @@ ConfigureServices(serviceCollection,configuration);
 var serviceProvider = serviceCollection.BuildServiceProvider();
 
 // Get an instance of the operations class.
-var operations = serviceProvider.GetService<ProvisioningLibrary.Operations>(te);
+var operations = serviceProvider.GetService<ProvisioningLibrary.Operations>();
 var logger = serviceProvider.GetService<ILoggerFactory>()?.CreateLogger("Microsoft.Fabric.Provisioning.Client");
 var telemetryClient=serviceProvider.GetService<TelemetryClient>();
 telemetryClient.TrackEvent("I am here created a logger instance");
