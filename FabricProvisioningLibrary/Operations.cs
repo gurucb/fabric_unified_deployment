@@ -82,6 +82,7 @@
                                                     { "Type", resp.Type },
                                                     { "CapacityId", resp.CapacityId }
                                             });
+                        _telemetryClient.Flush();
                         return resp;
 
                     }
@@ -283,6 +284,7 @@
                                                     { "Type", resp.Type },
                                                     {"workspaceId",resp.WorkspaceId }
                                            });
+                    _telemetryClient.Flush();
                     return resp;
                 }
                 else
