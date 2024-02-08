@@ -7,16 +7,27 @@
     using Microsoft.Fabric.Provisioning.Library.Models;
     using System.Text.Json;
     using System.Runtime.CompilerServices;
+    using Microsoft.ApplicationInsights;
+    using Microsoft.Extensions.Configuration;
 
     public class Operations
     {
         private readonly ILogger<Operations> logger;
         private readonly HttpClient client;
+        private readonly TelemetryClient _telemetryClient;
+        private readonly IConfiguration _configuration;
 
-        public Operations(ILogger<Operations> logger)
+        public Operations(ILogger<Operations> logger, TelemetryClient telemetryClient)
         {
             this.logger = logger;
             this.client = new();
+            _configuration = new ConfigurationBuilder()
+               .SetBasePath(Directory.GetCurrentDirectory())
+               .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+               .Build();
+
+
+            _telemetryClient = telemetryClient ?? throw new ArgumentNullException(nameof(telemetryClient));
         }
 
         public WorkspaceResponse? CreateWorkspace(string token,
@@ -62,7 +73,17 @@
 
                     if (createResponseMessage.IsSuccessStatusCode)
                     {
-                        return createResponseMessage.Content?.ReadFromJsonAsync<WorkspaceResponse>().Result;
+                        var resp=createResponseMessage.Content?.ReadFromJsonAsync<WorkspaceResponse>().Result;
+
+                        _telemetryClient.TrackEvent("WorkspaceCreated",
+                                            new System.Collections.Generic.Dictionary<string, string>
+                                            {
+                                                    { "DisplayName", resp.DisplayName },
+                                                    { "Type", resp.Type },
+                                                    { "CapacityId", resp.CapacityId }
+                                            });
+                        return resp;
+
                     }
                     else
                     {
@@ -254,7 +275,15 @@
 
                 if (responseMessage.IsSuccessStatusCode)
                 {
-                    return responseMessage.Content?.ReadFromJsonAsync<CreateItemResponse>().Result;
+                    var resp = responseMessage.Content?.ReadFromJsonAsync<CreateItemResponse>().Result;
+                    _telemetryClient.TrackEvent("ItemCreated",
+                                           new System.Collections.Generic.Dictionary<string, string>
+                                           {
+                                                    { "DisplayName", resp.DisplayName },
+                                                    { "Type", resp.Type },
+                                                    {"workspaceId",resp.WorkspaceId }
+                                           });
+                    return resp;
                 }
                 else
                 {

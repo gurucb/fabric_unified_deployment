@@ -1,6 +1,7 @@
 using FabricAutomation.Filters;
 using FabricAutomation.Models;
 using FabricAutomation.Services;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Fabric.Provisioning.Library;
 using Microsoft.Fabric.Provisioning.Library.Models;
@@ -18,9 +19,10 @@ namespace FabricAutomation.Controllers
         private readonly IFabricService _fabricService;
         private readonly ILogger<Operations> _loggerOpeartion;
         private readonly IConfiguration _configuration;
+        private readonly TelemetryClient _telemetryClient;
 
         public FabricController(ILogger<FabricController> logger, ILogger<Operations> loggerOperations,
-            IFabricService fabricRepository)
+            IFabricService fabricRepository, TelemetryClient telemetryClient)
         {
             _logger = logger;
             _fabricService = fabricRepository;
@@ -29,6 +31,9 @@ namespace FabricAutomation.Controllers
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .Build();
+
+
+            _telemetryClient = telemetryClient ?? throw new ArgumentNullException(nameof(telemetryClient));
         }
 
         [HttpPost("CreateWorkspace")]
@@ -37,7 +42,7 @@ namespace FabricAutomation.Controllers
         {
             try
             {
-                var operations = new Operations(_loggerOpeartion);
+                var operations = new Operations(_loggerOpeartion,_telemetryClient);
 
                 _logger.LogInformation($"Creating resource {resource.DisplayName}.");
 
@@ -50,7 +55,13 @@ namespace FabricAutomation.Controllers
 
                 if (workspaceResponse != null)
                 {
-
+                    _telemetryClient.TrackEvent("WorkspaceCreated",
+                                               new System.Collections.Generic.Dictionary<string, string>
+                                               {
+                                                    { "DisplayName", workspaceResponse.DisplayName },
+                                                    { "Type", workspaceResponse.Type },
+                                                    { "CapacityId", workspaceResponse.CapacityId }
+                                               });
                     return new FabricResource
                     {
                         Id = workspaceResponse.Id,
@@ -70,6 +81,7 @@ namespace FabricAutomation.Controllers
             {
 
                 _logger?.LogError(500, ex, message: ex.Message);
+                _telemetryClient.TrackException(ex);
                 return null;
             }
         }
@@ -92,7 +104,7 @@ namespace FabricAutomation.Controllers
         {
             try
             {
-                var operations = new Operations(_loggerOpeartion);
+                var operations = new Operations(_loggerOpeartion, _telemetryClient);
 
                 _logger.LogInformation($"Getting resource.");
 
@@ -133,7 +145,7 @@ namespace FabricAutomation.Controllers
         {
             try
             {
-                var operations = new Operations(_loggerOpeartion);
+                var operations = new Operations(_loggerOpeartion, _telemetryClient);
 
                 _logger.LogInformation($"Getting list of worksapces.");
 
@@ -172,7 +184,7 @@ namespace FabricAutomation.Controllers
         {
             try
             {
-                var operations = new Operations(_loggerOpeartion);
+                var operations = new Operations(_loggerOpeartion, _telemetryClient);
 
                 _logger.LogInformation($"Deleting resource");
 
@@ -209,7 +221,7 @@ namespace FabricAutomation.Controllers
         {
             try
             {
-                var operations = new Operations(_loggerOpeartion);
+                var operations = new Operations(_loggerOpeartion,_telemetryClient);
 
                 _logger.LogInformation($"Creating item {resource.DisplayName}.");
 
@@ -252,7 +264,7 @@ namespace FabricAutomation.Controllers
         {
             try
             {
-                var operations = new Operations(_loggerOpeartion);
+                var operations = new Operations(_loggerOpeartion, _telemetryClient);
 
                 _logger.LogInformation($"getting item");
 
@@ -295,7 +307,7 @@ namespace FabricAutomation.Controllers
         {
             try
             {
-                var operations = new Operations(_loggerOpeartion);
+                var operations = new Operations(_loggerOpeartion, _telemetryClient);
 
                 _logger.LogInformation($"listing item");
 
@@ -334,7 +346,7 @@ namespace FabricAutomation.Controllers
         {
             try
             {
-                var operations = new Operations(_loggerOpeartion);
+                var operations = new Operations(_loggerOpeartion, _telemetryClient);
 
                 _logger.LogInformation($"updating item");
 
@@ -377,7 +389,7 @@ namespace FabricAutomation.Controllers
         {
             try
             {
-                var operations = new Operations(_loggerOpeartion);
+                var operations = new Operations(_loggerOpeartion, _telemetryClient);
 
                 _logger.LogInformation($"deleting item");
 
@@ -449,9 +461,11 @@ namespace FabricAutomation.Controllers
 
                 
                     _logger.LogInformation($"Command Output: {output}");
+                    _telemetryClient.TrackEvent("Workspace And Item via Mixin succeeded");
+                                           
                     // _logger.LogError($"Command Error: {error}");
 
-                   // return Ok(new { Output = output, Error = error });
+                    // return Ok(new { Output = output, Error = error });
 
                     return Ok(new { Output = output });
                 }

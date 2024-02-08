@@ -7,15 +7,42 @@ using Microsoft.Extensions.Logging.Debug;
 using Microsoft.Extensions.Logging;
 using Microsoft.Fabric.Provisioning.Library.Models;
 using ProvisioningLibrary = Microsoft.Fabric.Provisioning.Library;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Fabric.Provisioning.Library.Services;
+using Microsoft.ApplicationInsights;
+using Microsoft.ApplicationInsights.DependencyCollector;
+using Microsoft.ApplicationInsights.Extensibility;
 
 // Service collection for configuring dependency injection.
+
 var serviceCollection = new ServiceCollection();
-ConfigureServices(serviceCollection);
+
+
+var currentDirectory = Directory.GetCurrentDirectory();
+
+while (!File.Exists(Path.Combine(currentDirectory, "appsettings.json")) && currentDirectory != null)
+{
+    currentDirectory = Directory.GetParent(currentDirectory)?.FullName;
+}
+
+
+
+// Create IConfiguration object from appsettings.json
+var configuration = new ConfigurationBuilder()
+    .AddJsonFile(Path.Combine(currentDirectory, "appsettings.json"), optional: true, reloadOnChange: true)
+    .Build();
+
+
+ConfigureServices(serviceCollection,configuration);
 var serviceProvider = serviceCollection.BuildServiceProvider();
 
 // Get an instance of the operations class.
-var operations = serviceProvider.GetService<ProvisioningLibrary.Operations>();
+var operations = serviceProvider.GetService<ProvisioningLibrary.Operations>(te);
 var logger = serviceProvider.GetService<ILoggerFactory>()?.CreateLogger("Microsoft.Fabric.Provisioning.Client");
+var telemetryClient=serviceProvider.GetService<TelemetryClient>();
+telemetryClient.TrackEvent("I am here created a logger instance");
+// Get an instance of the telemetryClient class.
+
 
 //create workspace
 var tokenOption = new Option<string>(
@@ -63,6 +90,20 @@ createCommand.SetHandler((token, payload, correlationId) =>
         if (response != null)
         {
             logger?.LogInformation(JsonSerializer.Serialize<WorkspaceResponse>(response));
+
+            if (telemetryClient != null)
+            {
+                telemetryClient.TrackTrace(message: "I am here after creating telemetryclient");
+                var properties = new Dictionary<string, string>
+                    {
+                        { "WorkspaceId", response.DisplayName }, 
+                        { "Operation", "CreateWorkspace" },
+                        {"type", response.Type },
+                        {"capacityId" , response.CapacityId }
+                    };
+
+                telemetryClient.TrackEvent("WorkspaceCreated", properties);
+            }
         }
         else
         {
@@ -182,7 +223,9 @@ tokenOption, continuationTokenOption, correlationIdOption);
 return await rootCommand.InvokeAsync(args);
 
 
-static void ConfigureServices(ServiceCollection services) =>
+
+static void ConfigureServices(ServiceCollection services, IConfiguration configuration) =>
+
     services.AddLogging(config =>
     {
         config.AddDebug();
@@ -193,4 +236,17 @@ static void ConfigureServices(ServiceCollection services) =>
         options.AddFilter<DebugLoggerProvider>("FabricProvisioning", LogLevel.Information);
         options.AddFilter<ConsoleLoggerProvider>("FabricProvisioning", LogLevel.Warning);
     })
-    .AddTransient<ProvisioningLibrary.Operations>();
+    .AddTransient<ProvisioningLibrary.Operations>()
+    // .AddTelemetryClient(configuration);
+    .AddSingleton<TelemetryClient>((serviceProvider) =>
+    {
+       // string instrumentationKey = configuration["ApiSettings:ApplicationInsights:InstrumentationKey"];
+        string instrumentationKey = "7f2db062-6e43-411d-999f-3d3d15c46b8f";
+        var telemetryConfiguration = TelemetryConfiguration.CreateDefault();
+        telemetryConfiguration.InstrumentationKey = instrumentationKey;
+
+        DependencyTrackingTelemetryModule depModule = new DependencyTrackingTelemetryModule();
+        depModule.Initialize(telemetryConfiguration);
+
+        return new TelemetryClient(telemetryConfiguration);
+    });
