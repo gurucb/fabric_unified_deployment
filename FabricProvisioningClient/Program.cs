@@ -24,9 +24,17 @@ var serviceCollection = new ServiceCollection();
 //{
 //    currentDirectory = Directory.GetParent(currentDirectory)?.FullName;
 //}
-////Create IConfiguration object from appsettings.json
+
+
+//Create IConfiguration object from appsettings.json for windows
 //var configuration = new ConfigurationBuilder()
 //    .AddJsonFile(Path.Combine(currentDirectory, "appsettings.json"), optional: true, reloadOnChange: true)
+//    .Build();
+
+
+//Create IConfiguration object from appsettings.json for Ubuntu
+//var configuration = new ConfigurationBuilder()
+//    .AddJsonFile("/home/kirthika/fabric_unified_deployment/FabricProvisioningClient/appsettings.json", optional: true, reloadOnChange: true)
 //    .Build();
 
 
@@ -239,7 +247,7 @@ return await rootCommand.InvokeAsync(args);
     .AddTransient<TelemetryClient>((serviceProvider) =>
     {
 
-        //  string instrumentationkey = configuration["apisettings:applicationinsights:instrumentationkey"];
+        //  string instrumentationkey = configuration["ApiSettings:ApplicationInsights:InstrumentationKey"];
         // string instrumentationKey = config["ApiSettings:ApplicationInsights:InstrumentationKey"];
         string instrumentationKey = "7f2db062-6e43-411d-999f-3d3d15c46b8f";
         var telemetryConfiguration = TelemetryConfiguration.CreateDefault();
